@@ -6,7 +6,6 @@ from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.properties import ListProperty, NumericProperty, StringProperty, BooleanProperty
 from itertools import cycle
 from kivy.clock import Clock
-import abc
 
 class Cycle:
     def __init__(self):
@@ -49,7 +48,6 @@ class Pomodoro(MDFloatLayout):
         if not self.running:
             self.running = True
             Clock.schedule_interval(self.update, 1)
-            Clock.schedule_interval(self.anim.temp, 1)
 
     def stop(self):
         if self.running:
@@ -96,7 +94,7 @@ class PomodoroAnimacao(AnchorLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._tempo = next(self.tempo) 
-        self.valor = int((100 / self._tempo.time))
+        self.valor = int(100 / self._tempo.time)
 
     def temp(self, *args):
         if self.valor < 100:
