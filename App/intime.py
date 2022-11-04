@@ -37,21 +37,17 @@ class Pomodoro(MDFloatLayout):
     timer_string = StringProperty()
     running = BooleanProperty(False)
     icone = StringProperty('play-circle')
-    pomodoro_valor = NumericProperty(0)
     cycle = Cycle()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._time = next(self.cycle)
-        self.tempo = self._time
-        self.valor = int(100 / self.tempo.time)
         self.timer_string = str(self._time)
 
     def start(self):
         if not self.running:
             self.running = True
             Clock.schedule_interval(self.update, 1)
-            Clock.schedule_interval(self.temp, 1)
 
     def stop(self):
         if self.running:
@@ -87,20 +83,10 @@ class Pomodoro(MDFloatLayout):
                 self._time = next(self.cycle)
         self.timer_string = str(self._time) 
     
-    def temp(self, *args):
-        if self.valor < 100:
-            self.valor += 1
-            self.pomodoro_valor += 1
-            print(self.valor)
-        if self.valor == 100:
-            self.pomodoro_valor = 0
-            self.valor = 0
-            return False
-
 class PomodoroAnimacao(AnchorLayout):
-    pomodoro_cor = ListProperty([0, 0, 0])
-    pomodoro_tamanho = NumericProperty(10)
-    pomodoro_valor = NumericProperty(0)
+    pomodoro_cor = ListProperty([104/255, 207/255, 112/255])
+    pomodoro_tamanho = NumericProperty(15)
+    pomodoro_valor = NumericProperty(100)
 
 
 class InTime(MDApp):
