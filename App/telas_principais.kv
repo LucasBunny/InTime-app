@@ -2,7 +2,7 @@
 <PomodoroAnimacao>
     canvas:
         Color:
-            rgb: root.pomodoro_cor
+            rgba: root.pomodoro_cor + [0.8]
         Line:
             width: root.pomodoro_tamanho
             ellipse: (self.x, self.y, self.width, self.height, 0, self.pomodoro_valor*3.6)
@@ -26,7 +26,7 @@
     MDIconButton:
         id: botao_iniciar
         icon: 'play-circle'
-        icon_size: 50
+        icon_size: 55
         pos_hint: {'center_x': .5, 'center_y': .20}
         on_release:
             self.icon = 'pause-circle' if self.icon == 'play-circle' else 'play-circle'
@@ -36,7 +36,7 @@
     MDIconButton:
         id: botao_reiniciar
         icon: 'restart'
-        icon_size: 45
+        icon_size: 50
         pos_hint: {'center_x': .70, 'center_y': .20}
         icon_color: 0, 0, 0, 1
         disabled_color: 0, 0, 0, .3

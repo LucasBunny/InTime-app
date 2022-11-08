@@ -10,9 +10,9 @@ from kivy.clock import Clock
 class Cycle:
     def __init__(self):
         self.cycle = cycle([
-            Timer(1), Timer(2), 
-            Timer(3), Timer(4), 
-            Timer(5), Timer(6)
+            Timer(25), Timer(5), 
+            Timer(25), Timer(5), 
+            Timer(25), Timer(30)
             ]) 
 
     def __iter__(self):
@@ -66,7 +66,7 @@ class Pomodoro(MDFloatLayout):
             self.start()
 
     def resetar(self, *args):
-        self.cycle = cycle([Timer(1), Timer(2), Timer(3), Timer(4), Timer(5), Timer(6)])
+        self.cycle = cycle([Timer(25), Timer(5), Timer(25), Timer(5), Timer(25), Timer(30)])
         self._time = next(self.cycle)
         self.timer_string = str(self._time)
         return False
@@ -84,8 +84,8 @@ class Pomodoro(MDFloatLayout):
         self.timer_string = str(self._time) 
     
 class PomodoroAnimacao(AnchorLayout):
-    pomodoro_cor = ListProperty([104/255, 207/255, 112/255])
-    pomodoro_tamanho = NumericProperty(15)
+    pomodoro_cor = ListProperty([0, 0, 0])
+    pomodoro_tamanho = NumericProperty(12)
     pomodoro_valor = NumericProperty(100)
 
 
