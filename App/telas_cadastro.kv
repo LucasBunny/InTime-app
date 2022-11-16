@@ -2,9 +2,93 @@
     group: 'group'
     size_hint: None, None
     size: dp(48), dp(48)
+<Login>:
+    email: campo_email_user
+    senha: campo_senha_user
+    #Titulo
+    MDFloatLayout:
+        MDLabel:
+            text: 'Entrar'
+            font_name: 'Fonts\Comfortaa-Regular.ttf'
+            pos_hint: {'center_x': .55, 'center_y': .87}
+            font_size: 36
+
+    #Label 'E-mail'
+    MDTextField:
+        id: campo_email_user
+        hint_text: "E-mail:"
+        mode: 'rectangle'
+        icon_left: 'email-outline'
+        icon_left_color_normal: 0, 0, 0, .5
+        icon_left_color_focus: 0, 0, 0, 1
+        line_color_normal: 0, 0, 0, 1
+        hint_text_color_normal: 0, 0, 0, .5
+        text_color_normal: 0, 0, 0, 1
+        line_color_focus: 0, 0, 0, 1
+        hint_text_color_focus: 0, 0, 0, .5
+        text_color_focus: 0, 0, 0, 1
+        pos_hint: {'center_x': .50, 'center_y': .77}
+        size_hint: .9, .08
+
+    #Label 'Senha'
+    MDTextField:
+        id: campo_senha_user
+        hint_text: "Senha:"
+        mode: 'rectangle'
+        password: True
+        icon_left: 'lock-outline'
+        icon_left_color_normal: 0, 0, 0, .5
+        icon_left_color_focus: 0, 0, 0, 1
+        line_color_normal: 0, 0, 0, 1
+        hint_text_color_normal: 0, 0, 0, .5
+        text_color_normal: 0, 0, 0, 1
+        line_color_focus: 0, 0, 0, 1
+        hint_text_color_focus: 0, 0, 0, .5
+        text_color_focus: 0, 0, 0, 1
+        pos_hint: {'center_x': .50, 'center_y': .68}
+        size_hint: .9, .08
+    MDIconButton:
+        icon: 'eye-off'
+        pos_hint: {'center_x': .857, 'center_y': .675}
+        icon_size: '30sp'
+        theme_icon_color: "Custom"
+        icon_color: 0, 0, 0, .3
+        on_release:
+            self.icon = 'eye' if self.icon == 'eye-off' else 'eye-off'
+            campo_senha_user.password = False if campo_senha_user.password is True else True
+
+    #Botão 'Esqueceu Senha'
+    MDTextButton:
+        text: 'Esqueceu a senha?'
+        pos_hint: {'center_x': .27, 'center_y': .57}
+        font_style: 'H6'
+        font_size: '18'
+
+    #Botão 'Cadastre-se'
+    MDTextButton:
+        text: 'Cadastre-se'
+        pos_hint: {'center_x': .77, 'center_y': .57}
+        font_style: 'H6'
+        font_size: '18'
+        on_release:
+            root.transition.direction = 'left'
+            root.current = 'tela_cadastro'
+
+    #Botão 'ENTRAR'
+    MDRaisedButton:
+        text: "ENTRAR"
+        font_style: 'Button'
+        md_bg_color: '#00000'
+        pos_hint: {'center_x': .50, 'center_y': .40}
+        size_hint: .9, .07    
+        on_release:
+            root.autentication()
+                
+
 
 MDScreenManager:
-    
+    id: scr_mmgr_autentication
+    tela_entrar: tela_entrar
     #   TELA INICIAL
     MDScreen:
         md_bg_color: "#BDDBFF"
@@ -44,6 +128,7 @@ MDScreenManager:
     
     #   TELA ENTRAR
     MDScreen:
+        id: tela_entrar
         md_bg_color: "#BDDBFF"
         name: 'tela_entrar'
 
@@ -56,83 +141,8 @@ MDScreenManager:
             on_release:
                 root.transition.direction = 'right'
                 root.current = 'tela_inicial'
+        Login
 
-        #Titulo
-        MDFloatLayout:
-            MDLabel:
-                text: 'Entrar'
-                font_name: 'Fonts\Comfortaa-Regular.ttf'
-                pos_hint: {'center_x': .55, 'center_y': .87}
-                font_size: 36
-
-        #Label 'E-mail'
-        MDTextField:
-            hint_text: "E-mail:"
-            mode: 'rectangle'
-            icon_left: 'email-outline'
-            icon_left_color_normal: 0, 0, 0, .5
-            icon_left_color_focus: 0, 0, 0, 1
-            line_color_normal: 0, 0, 0, 1
-            hint_text_color_normal: 0, 0, 0, .5
-            text_color_normal: 0, 0, 0, 1
-            line_color_focus: 0, 0, 0, 1
-            hint_text_color_focus: 0, 0, 0, .5
-            text_color_focus: 0, 0, 0, 1
-            pos_hint: {'center_x': .50, 'center_y': .77}
-            size_hint: .9, .08
-
-        #Label 'Senha'
-        MDTextField:
-            id: campo_senha_user
-            hint_text: "Senha:"
-            mode: 'rectangle'
-            password: True
-            icon_left: 'lock-outline'
-            icon_left_color_normal: 0, 0, 0, .5
-            icon_left_color_focus: 0, 0, 0, 1
-            line_color_normal: 0, 0, 0, 1
-            hint_text_color_normal: 0, 0, 0, .5
-            text_color_normal: 0, 0, 0, 1
-            line_color_focus: 0, 0, 0, 1
-            hint_text_color_focus: 0, 0, 0, .5
-            text_color_focus: 0, 0, 0, 1
-            pos_hint: {'center_x': .50, 'center_y': .68}
-            size_hint: .9, .08
-        MDIconButton:
-            icon: 'eye-off'
-            pos_hint: {'center_x': .857, 'center_y': .675}
-            icon_size: '30sp'
-            theme_icon_color: "Custom"
-            icon_color: 0, 0, 0, .3
-            on_release:
-                self.icon = 'eye' if self.icon == 'eye-off' else 'eye-off'
-                campo_senha_user.password = False if campo_senha_user.password is True else True
-
-        #Botão 'Esqueceu Senha'
-        MDTextButton:
-            text: 'Esqueceu a senha?'
-            pos_hint: {'center_x': .27, 'center_y': .57}
-            font_style: 'H6'
-            font_size: '18'
-
-        #Botão 'Cadastre-se'
-        MDTextButton:
-            text: 'Cadastre-se'
-            pos_hint: {'center_x': .77, 'center_y': .57}
-            font_style: 'H6'
-            font_size: '18'
-            on_release:
-                root.transition.direction = 'left'
-                root.current = 'tela_cadastro'
-
-        #Botão 'PRÓXIMO'
-        MDRaisedButton:
-            text: "ENTRAR"
-            font_style: 'Button'
-            md_bg_color: '#00000'
-            pos_hint: {'center_x': .50, 'center_y': .40}
-            size_hint: .9, .07          
-    
     #   TELA DE CADASTRO
     MDScreen:
         md_bg_color: "#BDDBFF"
