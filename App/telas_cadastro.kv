@@ -119,7 +119,7 @@
     #Label 'Data Nascimento'
     MDTextField:
         id: campo_data
-        hint_text: "dd/mm/yyyy"
+        hint_text: "yyyy/mm/dd"
         mode: 'rectangle'
         icon_left: 'calendar-text-outline'
         icon_left_color_normal: 0, 0, 0, .5
@@ -205,6 +205,7 @@
             campo_confirmar_senha.password = False if campo_confirmar_senha.password is True else True
     #Label 'Termos de Uso'
     MDIconButton:
+        id: termos_uso
         icon: 'checkbox-blank-outline'
         pos_hint: {'center_x': .10, 'center_y': .15}
         on_release:
@@ -225,7 +226,7 @@
         pos_hint: {'center_x': .50, 'center_y': .07}
         size_hint: .9, .07
         on_release:
-            root.cadastro()
+            root.cadastro() 
 ##################################################################################################################################
 
 #   TELAS DO APP

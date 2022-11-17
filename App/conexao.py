@@ -12,10 +12,10 @@ import pyodbc
 
 dados_conexao = (
     "Driver={SQL Server};"
-    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
-    "Server=localhost;"
-    "username=sa;"
-    "password=123456;"
+    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    #"Server=localhost;"
+    #"username=sa;"
+    #"password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
@@ -57,20 +57,40 @@ class Login(MDFloatLayout):
             
 
 class Cadastrar(MDFloatLayout):
+    def close_alert(self, obj):
+        self.alert.dismiss()
+
+    def show_alert(self):
+        close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
+        self.alert = MDDialog( title="Aviso", text="Faltam informações nos campos", buttons=[close_btn])
+        self.alert.open()
+
     def cadastro(self):
         nome = self.ids.campo_nome.text
         sobrenome = self.ids.campo_sobrenome.text
+        
         data = self.ids.campo_data.text
+        data = data.replace('/', '-')
+        
         email = self.ids.campo_email.text
         senha = self.ids.campo_senha.text
         conf_senha = self.ids.campo_confirmar_senha.text
 
-        print(nome)
-        print(sobrenome)
-        print(data)
-        print(email)
-        print(senha)
-        print(conf_senha)
+        if nome != '' and email != '' and senha != '' and conf_senha != '' and senha == conf_senha:
+            query = cursor.execute(f"""SELECT COUNT(Id_user) from Usuario;""")
+            
+            for linhas in query:
+                linhas = int(''.join(map(str, linhas)))
+            
+            cursor.execute(
+                f"""
+                INSERT INTO Usuario 
+                VALUES ({linhas+1}, '{nome}', '{sobrenome}', '{email}', '{senha}', '{data}', 'feminino', Null);
+                """
+            )
+            cursor.commit()
+        else:
+             self.show_alert()
 
 
 class Autenticar(MDApp):
