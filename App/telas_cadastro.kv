@@ -5,13 +5,6 @@
 <Login>:
     email: campo_email_user
     senha: campo_senha_user
-    #Titulo
-    MDFloatLayout:
-        MDLabel:
-            text: 'Entrar'
-            font_name: 'Fonts\Comfortaa-Regular.ttf'
-            pos_hint: {'center_x': .55, 'center_y': .87}
-            font_size: 36
 
     #Label 'E-mail'
     MDTextField:
@@ -57,23 +50,6 @@
             self.icon = 'eye' if self.icon == 'eye-off' else 'eye-off'
             campo_senha_user.password = False if campo_senha_user.password is True else True
 
-    #Botão 'Esqueceu Senha'
-    MDTextButton:
-        text: 'Esqueceu a senha?'
-        pos_hint: {'center_x': .27, 'center_y': .57}
-        font_style: 'H6'
-        font_size: '18'
-
-    #Botão 'Cadastre-se'
-    MDTextButton:
-        text: 'Cadastre-se'
-        pos_hint: {'center_x': .77, 'center_y': .57}
-        font_style: 'H6'
-        font_size: '18'
-        on_release:
-            root.transition.direction = 'left'
-            root.current = 'tela_cadastro'
-
     #Botão 'ENTRAR'
     MDRaisedButton:
         text: "ENTRAR"
@@ -84,12 +60,10 @@
         on_release:
             root.autentication()
                 
+##################################################################################################################################
 
-
+#   TELAS DO APP
 MDScreenManager:
-    id: scr_mmgr_autentication
-    tela_entrar: tela_entrar
-    #   TELA INICIAL
     MDScreen:
         md_bg_color: "#BDDBFF"
         name: 'tela_inicial'
@@ -128,7 +102,6 @@ MDScreenManager:
     
     #   TELA ENTRAR
     MDScreen:
-        id: tela_entrar
         md_bg_color: "#BDDBFF"
         name: 'tela_entrar'
 
@@ -141,7 +114,33 @@ MDScreenManager:
             on_release:
                 root.transition.direction = 'right'
                 root.current = 'tela_inicial'
+        #Titulo
+        MDFloatLayout:
+            MDLabel:
+                text: 'Entrar'
+                font_name: 'Fonts\Comfortaa-Regular.ttf'
+                pos_hint: {'center_x': .55, 'center_y': .87}
+                font_size: 36
+        
+        #Classe 'Login'
         Login
+
+        #Botão 'Esqueceu Senha'
+        MDTextButton:
+            text: 'Esqueceu a senha?'
+            pos_hint: {'center_x': .27, 'center_y': .57}
+            font_style: 'H6'
+            font_size: '18'
+
+        #Botão 'Cadastre-se'
+        MDTextButton:
+            text: 'Cadastre-se'
+            pos_hint: {'center_x': .77, 'center_y': .57}
+            font_style: 'H6'
+            font_size: '18'
+            on_release:
+                root.transition.direction = 'left'
+                root.current = 'tela_cadastro'
 
     #   TELA DE CADASTRO
     MDScreen:

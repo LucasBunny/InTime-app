@@ -42,6 +42,9 @@ class Login(MDFloatLayout):
             print("Autenticação Completa")
             
 
+class Cadastrar(MDFloatLayout):
+    pass
+
 class Autenticar(MDApp):
     Window.size = (375, 812)
 
