@@ -1,22 +1,36 @@
+from cgitb import text
+from turtle import onclick, onrelease
 import pandas as pd
 from kivymd.tools.hotreload.app import MDApp
 from kivy.lang import Builder
 from kivy.core.window import Window
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
 from kivy.properties import ObjectProperty
 import pyodbc
 
 dados_conexao = (
     "Driver={SQL Server};"
-    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    "Server=localhost;"
+    "username=sa;"
+    "password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
 
-
 class Login(MDFloatLayout):
 #    scr_mmgr_autentication = ObjectProperty(None)
+
+    def close_alert(self, obj):
+        self.alert.dismiss()
+
+    def show_alert(self):
+        close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
+        self.alert = MDDialog( title="Aviso", text="Email ou Senha inválidos", buttons=[close_btn])
+        self.alert.open()
 
     def autentication(self):
         email = self.ids.campo_email_user.text
@@ -36,14 +50,28 @@ class Login(MDFloatLayout):
         user = pd.DataFrame(banco, columns=colunas)
 
         if user.empty:
-            print("Autenticação Falhou")
-            print("Senha ou Email inválidos")
+            self.show_alert()
+
         else:
             print("Autenticação Completa")
             
 
 class Cadastrar(MDFloatLayout):
-    pass
+    def cadastro(self):
+        nome = self.ids.campo_nome.text
+        sobrenome = self.ids.campo_sobrenome.text
+        data = self.ids.campo_data.text
+        email = self.ids.campo_email.text
+        senha = self.ids.campo_senha.text
+        conf_senha = self.ids.campo_confirmar_senha.text
+
+        print(nome)
+        print(sobrenome)
+        print(data)
+        print(email)
+        print(senha)
+        print(conf_senha)
+
 
 class Autenticar(MDApp):
     Window.size = (375, 812)
