@@ -104,15 +104,19 @@
         text: 'Gênero (Opcional)'
         pos_hint: {'center_x': .560, 'center_y': .67}
     Check:
+        id: male
         pos_hint: {'center_x': .10, 'center_y': .63}
         color: 'black'
+        on_active: root.check_male(*args)
     MDIcon:
         icon: 'human-male'
         pos_hint: {'center_x': .15, 'center_y': .60}
 
     Check:
+        id: female
         pos_hint: {'center_x': .30, 'center_y': .63}
         color: 'black'
+        on_active: root.check_female(*args)
     MDIcon:
         icon: 'human-female'
         pos_hint: {'center_x': .35, 'center_y': .599}
@@ -208,13 +212,11 @@
         on_release:
             self.icon = 'eye' if self.icon == 'eye-off' else 'eye-off'
             campo_confirmar_senha.password = False if campo_confirmar_senha.password is True else True
+    
     #Label 'Termos de Uso'
-    MDIconButton:
-        id: termos_uso
-        icon: 'checkbox-blank-outline'
+    MDCheckbox:
         pos_hint: {'center_x': .10, 'center_y': .15}
-        on_release:
-            self.icon = 'checkbox-marked' if self.icon == 'checkbox-blank-outline' else 'checkbox-blank-outline'
+        on_active: root.check_term_user()
     MDLabel:
         text: "Li e Aceito os"
         pos_hint: {'center_x': .65, 'center_y': .15}

@@ -32,7 +32,6 @@ class Timer:
     def __str__(self):
         return "{:02d}:{:02d}".format(*divmod(self.time, 60))
 
-
 class Pomodoro(MDFloatLayout):
     timer_string = StringProperty()
     running = BooleanProperty(False)
@@ -87,7 +86,6 @@ class PomodoroAnimacao(AnchorLayout):
     pomodoro_cor = ListProperty([0, 0, 0])
     pomodoro_tamanho = NumericProperty(12)
     pomodoro_valor = NumericProperty(100)
-
 
 class InTime(MDApp):
     Window.size = (375, 812)
