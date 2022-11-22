@@ -1,9 +1,8 @@
-from cgitb import text
-from turtle import onclick, onrelease
 import pandas as pd
 from kivymd.tools.hotreload.app import MDApp
 from kivy.lang import Builder
 from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDFlatButton
@@ -22,7 +21,6 @@ conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
 
 class Login(MDFloatLayout):
-#    scr_mmgr_autentication = ObjectProperty(None)
 
     def close_alert(self, obj):
         self.alert.dismiss()
@@ -46,14 +44,13 @@ class Login(MDFloatLayout):
         for resutl in query:
             resutl = list(resutl)
             banco.append(resutl)
-
         user = pd.DataFrame(banco, columns=colunas)
 
         if user.empty:
             self.show_alert()
 
         else:
-            print("Autenticação Completa")
+            print('Sucess')
             
 
 class Cadastrar(MDFloatLayout):
@@ -96,5 +93,5 @@ class Cadastrar(MDFloatLayout):
 class Autenticar(MDApp):
     Window.size = (375, 812)
 
-    def build_app(self, first=True):
-        return Builder.load_file('App/telas_cadastro.kv')
+    def build(self):
+        return Builder.load_file("App/telas_cadastro.kv")
