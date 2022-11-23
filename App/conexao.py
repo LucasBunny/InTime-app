@@ -11,10 +11,10 @@ import pyodbc
 
 dados_conexao = (
     "Driver={SQL Server};"
-    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
-    "Server=localhost;"
-    "username=sa;"
-    "password=123456;"
+    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    #"Server=localhost;"
+    #"username=sa;"
+    #"password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
