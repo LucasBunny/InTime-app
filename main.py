@@ -1,4 +1,3 @@
-from App.conexao import Autenticar
-from App.intime import InTime
+from App.app import InTime
 
-Autenticar().run()
+InTime().run()
