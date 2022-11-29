@@ -1,17 +1,19 @@
-from kivymd.tools.hotreload.app import MDApp
+import pyodbc
+import pandas as pd
+from itertools import cycle
+from kivy.clock import Clock
 from kivy.lang import Builder
+from kivymd.uix.card import MDCard
 from kivy.core.window import Window
+from kivymd.uix.dialog import MDDialog
+from kivy.uix.screenmanager import Screen
+from kivy.uix.scrollview import ScrollView
+from kivymd.uix.button import MDFlatButton
+from kivymd.tools.hotreload.app import MDApp
 from kivymd.uix.anchorlayout import AnchorLayout
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.properties import ListProperty, NumericProperty, StringProperty, BooleanProperty
-from itertools import cycle
-from kivy.clock import Clock
 from kivymd.uix.behaviors.backgroundcolor_behavior import BackgroundColorBehavior
-from kivymd.uix.button import MDFlatButton
-import pandas as pd
-from kivy.uix.screenmanager import Screen
-from kivymd.uix.dialog import MDDialog
-import pyodbc
 
 
 #Funções do Pomodoro
@@ -96,7 +98,6 @@ class PomodoroAnimacao(AnchorLayout):
     pomodoro_valor = NumericProperty(100)
 
 
-
 #Função do Cadastrar/Login
 dados_conexao = (
     "Driver={SQL Server};"
@@ -153,7 +154,6 @@ class Login(Screen, BackgroundColorBehavior):
 
         else:
             Clock.schedule_once(self.change_screen, 1)
-            print('Sucess')
            
 class Cadastrar(Screen, BackgroundColorBehavior):
     genero = 'Null'
@@ -223,7 +223,16 @@ class Tela_Configuracoes_About(Screen, BackgroundColorBehavior):
     pass
 
 class Tela_Tarefas(Screen, BackgroundColorBehavior):
-    pass
+    class Tarefa(MDCard):
+        '''Implements a material design v3 card.'''
+        titulo = StringProperty('Este aqui é um Título')
+        data = StringProperty('20/11')
+        text = StringProperty(
+            'Exemplo aqui esta, para mostrar que deu tudo certo!!! Vamos continuar escrevendo algo só para ver ser ele aguenta colocar muito texto :3'
+            )
+
+    def botao_nova(self):
+        self.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
 
 class Tela_Lembretes(Screen, BackgroundColorBehavior):
     pass

@@ -1,3 +1,43 @@
+#   -- RESOLVER --
+# ScrollView:
+#     MDGridLayout:
+#         cols: 1
+#         padding: 10, 10
+#         spacing: 10, 10
+#         size_hint_y: None
+#         height: self.minimum_height
+#         row_default_height: 80
+        
+<Tarefa>:
+    padding: 4
+    size_hint: None, None
+    size: "300dp", "150dp"
+    pos_hint: {"center_x": .5, "center_y": .5}
+
+    MDRelativeLayout:
+        MDLabel:
+            id: label_titulo
+            text: root.titulo
+            padding: [15, 15]
+            color: "black"
+            pos: "3dp", "45dp"
+            bold: True
+
+        MDLabel:
+            id: label_data
+            text: root.data
+            color: "black"
+            pos: "240dp", "45dp"
+            bold: True
+
+        MDLabel:
+            id: label_texto
+            text: root.text
+            markup: True
+            padding: [15, 15]
+            color: "black"
+            pos: "3dp", "-35dp"
+        
 <PomodoroAnimacao>
     canvas:
         Color:
@@ -755,7 +795,7 @@ MDScreenManager:
         icon: 'shield-lock'
         pos_hint: {'center_x': .07, 'center_y': .53}
 
-<Tela_Tarefas>:
+<Tela_Tarefas>:  
     #Titulo
     MDFloatLayout:
         MDLabel:
@@ -808,7 +848,7 @@ MDScreenManager:
         icon: 'book'
         icon_size: 30
         pos_hint: {'center_x': .90, 'center_y': .67}
-
+            
     #Botão Criar Nova Tarefa
     MDRectangleFlatIconButton:
         icon: 'plus'
@@ -821,7 +861,8 @@ MDScreenManager:
         pos_hint: {"center_x": .5, "center_y": .08}
         size_hint: 0.3, 0.06
         icon_size: 30
-        
+        on_release: root.botao_nova()
+
     #Menu de Navegação
     MDNavigationDrawer:
         id: nav_drawer_tarefas
