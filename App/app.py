@@ -98,19 +98,19 @@ class PomodoroAnimacao(AnchorLayout):
     pomodoro_valor = NumericProperty(100)
 
 
-#Função do Cadastrar/Login
+#Conexão com o Banco de Dados
 dados_conexao = (
     "Driver={SQL Server};"
-    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
-    #"Server=localhost;"
-    #"username=sa;"
-    #"password=123456;"
+    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    "Server=localhost;"
+    "username=sa;"
+    "password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
 
-
+#Telas do Aplicativo
 class Tela_Inicial(Screen, BackgroundColorBehavior):
     pass
 
@@ -224,12 +224,9 @@ class Tela_Configuracoes_About(Screen, BackgroundColorBehavior):
 
 class Tela_Tarefas(Screen, BackgroundColorBehavior):
     class Tarefa(MDCard):
-        '''Implements a material design v3 card.'''
         titulo = StringProperty('Este aqui é um Título')
         data = StringProperty('20/11')
-        text = StringProperty(
-            'Exemplo aqui esta, para mostrar que deu tudo certo!!! Vamos continuar escrevendo algo só para ver ser ele aguenta colocar muito texto :3'
-            )
+        text = StringProperty('Exemplo aqui esta, para mostrar que deu tudo certo!!! Vamos continuar escrevendo algo só para ver ser ele aguenta colocar muito texto :3')
 
     def botao_nova(self):
         self.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))

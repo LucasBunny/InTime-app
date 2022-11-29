@@ -1,13 +1,18 @@
 #   -- RESOLVER --
 # ScrollView:
-#     MDGridLayout:
-#         cols: 1
-#         padding: 10, 10
-#         spacing: 10, 10
-#         size_hint_y: None
-#         height: self.minimum_height
-#         row_default_height: 80
-        
+#   do_scroll_y: True
+#   do_scroll_x: False
+#   size_hint: (0.5, 0.5)
+#   pos_hint: {'center_x': 0.5, 'center_y': 0.5}  
+
+#   MDGridLayout:
+#       cols: 1
+#       padding: 10, 10
+#       spacing: 10, 10
+#       size_hint_y: None
+#       height: self.minimum_height
+#       row_default_height: 80
+
 <Tarefa>:
     padding: 4
     size_hint: None, None
@@ -37,7 +42,7 @@
             padding: [15, 15]
             color: "black"
             pos: "3dp", "-35dp"
-        
+
 <PomodoroAnimacao>
     canvas:
         Color:
@@ -72,6 +77,7 @@
     md_bg_color: "#BDDBFF"
 <Tela_Temporizador@BackgroundColorBehavior>:
     md_bg_color: "#BDDBFF"
+
 ##################################################################################################################################
 
 #   TELAS DO APP
@@ -795,7 +801,7 @@ MDScreenManager:
         icon: 'shield-lock'
         pos_hint: {'center_x': .07, 'center_y': .53}
 
-<Tela_Tarefas>:  
+<Tela_Tarefas>:
     #Titulo
     MDFloatLayout:
         MDLabel:
@@ -848,7 +854,7 @@ MDScreenManager:
         icon: 'book'
         icon_size: 30
         pos_hint: {'center_x': .90, 'center_y': .67}
-            
+
     #Botão Criar Nova Tarefa
     MDRectangleFlatIconButton:
         icon: 'plus'
