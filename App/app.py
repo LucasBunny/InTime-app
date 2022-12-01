@@ -5,11 +5,13 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivymd.uix.card import MDCard
 from kivy.core.window import Window
+from kivy.animation import Animation
 from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.button import MDFlatButton
 from kivymd.tools.hotreload.app import MDApp
+from kivymd.uix.behaviors import HoverBehavior
 from kivymd.uix.anchorlayout import AnchorLayout
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivy.properties import ListProperty, NumericProperty, StringProperty, BooleanProperty
@@ -101,10 +103,10 @@ class PomodoroAnimacao(AnchorLayout):
 #Conexão com o Banco de Dados
 dados_conexao = (
     "Driver={SQL Server};"
-    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
-    "Server=localhost;"
-    "username=sa;"
-    "password=123456;"
+    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    #"Server=localhost;"
+    #"username=sa;"
+    #"password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
@@ -223,13 +225,21 @@ class Tela_Configuracoes_About(Screen, BackgroundColorBehavior):
     pass
 
 class Tela_Tarefas(Screen, BackgroundColorBehavior):
-    class Tarefa(MDCard):
+    class Tarefa(MDCard, HoverBehavior):
         titulo = StringProperty('Este aqui é um Título')
         data = StringProperty('20/11')
         text = StringProperty('Exemplo aqui esta, para mostrar que deu tudo certo!!! Vamos continuar escrevendo algo só para ver ser ele aguenta colocar muito texto :3')
 
+        def click(self):
+            Animation(
+                pos=(30, 10),
+                size=(320, 250), 
+                duration=0.1,
+                t='in_quad',
+            ).start(self)
+
     def botao_nova(self):
-        self.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
+        self.ids.tarf.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
 
 class Tela_Lembretes(Screen, BackgroundColorBehavior):
     pass

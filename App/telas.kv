@@ -1,23 +1,9 @@
-#   -- RESOLVER --
-# ScrollView:
-#   do_scroll_y: True
-#   do_scroll_x: False
-#   size_hint: (0.5, 0.5)
-#   pos_hint: {'center_x': 0.5, 'center_y': 0.5}  
-
-#   MDGridLayout:
-#       cols: 1
-#       padding: 10, 10
-#       spacing: 10, 10
-#       size_hint_y: None
-#       height: self.minimum_height
-#       row_default_height: 80
-
 <Tarefa>:
     padding: 4
     size_hint: None, None
     size: "300dp", "150dp"
-    pos_hint: {"center_x": .5, "center_y": .5}
+    ripple_behavior: True
+    on_release: root.click()
 
     MDRelativeLayout:
         MDLabel:
@@ -802,6 +788,20 @@ MDScreenManager:
         pos_hint: {'center_x': .07, 'center_y': .53}
 
 <Tela_Tarefas>:
+    ScrollView:
+        do_scroll_y: True
+        do_scroll_x: False
+        pos_hint: {'center_x': .5, 'center_y': .2}  
+
+        MDGridLayout:
+            id: tarf
+            cols: 1
+            padding: 40, 40
+            spacing: 20, 20
+            size_hint_y: None
+            height: self.minimum_height
+            row_default_height: 80    
+            
     #Titulo
     MDFloatLayout:
         MDLabel:
