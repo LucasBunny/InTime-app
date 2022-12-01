@@ -10,6 +10,7 @@ from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import Screen
 from kivy.uix.scrollview import ScrollView
 from kivymd.uix.button import MDFlatButton
+from kivymd.uix.button import MDRaisedButton
 from kivymd.tools.hotreload.app import MDApp
 from kivymd.uix.behaviors import HoverBehavior
 from kivymd.uix.anchorlayout import AnchorLayout
@@ -229,14 +230,34 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
         titulo = StringProperty('Este aqui é um Título')
         data = StringProperty('20/11')
         text = StringProperty('Exemplo aqui esta, para mostrar que deu tudo certo!!! Vamos continuar escrevendo algo só para ver ser ele aguenta colocar muito texto :3')
+        click = 0
 
-        def click(self):
-            Animation(
-                pos=(30, 10),
-                size=(320, 250), 
-                duration=0.1,
-                t='in_quad',
-            ).start(self)
+        def user_click(self):
+            if self.click == 0:
+                Animation(
+                    size=(300, 300), 
+                    duration=0.1,
+                    t='in_quad',
+                ).start(self)
+                self.ids.label_titulo.pos=(3, 100)
+                self.ids.label_data.pos=(240, 100)
+                self.ids.label_texto.pos=(3, 40)
+
+                self.ids.layout_tarf.add_widget(MDRaisedButton(text='Cancelar', pos_hint={'center_x':.1, 'center_y':.5}))
+                self.ids.layout_tarf.add_widget(MDRaisedButton(text='Salvar', pos_hint={'center_x':.5, 'center_y':.5}))
+                self.ids.layout_tarf.add_widget(MDRaisedButton(text='Finalizar Tarefa', pos_hint={'center_x':.9, 'center_y':.5}))
+                self.click = 1
+            else:
+                Animation(
+                    size=(300, 150), 
+                    duration=0.1,
+                    t='in_quad',
+                ).start(self)
+                self.ids.label_titulo.pos=(3, 45)
+                self.ids.label_data.pos=(240, 45)
+                self.ids.label_texto.pos=(3, -35)
+                self.click = 0
+
 
     def botao_nova(self):
         self.ids.tarf.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))

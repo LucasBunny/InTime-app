@@ -3,9 +3,10 @@
     size_hint: None, None
     size: "300dp", "150dp"
     ripple_behavior: True
-    on_release: root.click()
+    on_release: root.user_click()
 
     MDRelativeLayout:
+        id: layout_tarf
         MDLabel:
             id: label_titulo
             text: root.titulo
@@ -798,9 +799,9 @@ MDScreenManager:
             cols: 1
             padding: 40, 40
             spacing: 20, 20
-            size_hint_y: None
+            size_hint_y: 10
             height: self.minimum_height
-            row_default_height: 80    
+            row_default_height: 10    
             
     #Titulo
     MDFloatLayout:
