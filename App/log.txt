@@ -1,0 +1,2 @@
+ Id_user User_nome User_sobrenome      User_email User_senha User_dt_nascimento User_genero User_img
+       1     Lucas    Monte Santo teste@gmail.com      12345         2004-12-30   Masculino     None

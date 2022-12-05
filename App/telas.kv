@@ -1,9 +1,37 @@
-<Tarefa>:
+<Lembrete>
+    id: lembrete
     padding: 4
     size_hint: None, None
     size: "300dp", "150dp"
     ripple_behavior: True
-    on_release: root.user_click()
+    on_release: root.click_open()
+
+    MDRelativeLayout:
+        id: layout_lemb
+        MDLabel:
+            id: label_titulo
+            text: root.titulo
+            padding: [15, 15]
+            color: "black"
+            pos: "3dp", "45dp"
+            bold: True
+            font_style: 'H6'
+
+        MDLabel:
+            id: label_texto
+            text: root.text
+            markup: True
+            padding: [15, 15]
+            color: "black"
+            pos: "3dp", "-35dp"
+
+<Tarefa>:
+    id: tarefa
+    padding: 4
+    size_hint: None, None
+    size: "300dp", "150dp"
+    ripple_behavior: True
+    on_release: root.user_click_open()
 
     MDRelativeLayout:
         id: layout_tarf
@@ -14,12 +42,13 @@
             color: "black"
             pos: "3dp", "45dp"
             bold: True
+            font_style: 'H6'
 
         MDLabel:
             id: label_data
             text: root.data
             color: "black"
-            pos: "240dp", "45dp"
+            pos: "200dp", "45dp"
             bold: True
 
         MDLabel:
@@ -397,6 +426,7 @@ MDScreenManager:
         text: "Termos de Uso."
         pos_hint: {'center_x': .55, 'center_y': .15}
         theme_text_color: 'ContrastParentBackground'
+        on_release: root.terms()
 
     #Botão 'PRÓXIMO'
     MDRaisedButton:
@@ -416,7 +446,7 @@ MDScreenManager:
         pos_hint: {'center_x': .55, 'center_y': .87}
         font_size: 36
     MDLabel:
-        text: 'Segunda-Feira, 23 de outubro de 2023'
+        text: root.info_data
         font_style: 'Button'
         pos_hint: {'center_x': .56, 'center_y': .82}
 
@@ -930,6 +960,20 @@ MDScreenManager:
             root.manager.current = 'tela_configuracoes'
 
 <Tela_Lembretes>:
+    ScrollView:
+        do_scroll_y: True
+        do_scroll_x: False
+        pos_hint: {'center_x': .5, 'center_y': .2}  
+
+        MDGridLayout:
+            id: lemb
+            cols: 1
+            padding: 40, 40
+            spacing: 20, 20
+            size_hint_y: 10
+            height: self.minimum_height
+            row_default_height: 10  
+
     #Titulo
     MDFloatLayout:
         MDLabel:
@@ -992,6 +1036,7 @@ MDScreenManager:
         pos_hint: {"center_x": .5, "center_y": .08}
         size_hint: 0.3, 0.06
         icon_size: 30
+        on_release: root.botao_nova()
 
     #Menu de Navegação
     MDNavigationDrawer:
