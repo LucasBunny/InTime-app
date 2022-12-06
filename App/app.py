@@ -1,5 +1,7 @@
+import os
 import pyodbc
 import locale
+import unidecode
 import webbrowser
 import pandas as pd
 from itertools import cycle
@@ -114,20 +116,33 @@ dados_conexao = (
 )
 conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
+cursor1 = conexao.cursor()
+cursor2 = conexao.cursor()
+cursor3 = conexao.cursor()
+cursor4 = conexao.cursor()
+cursor5 = conexao.cursor()
 
 #Telas do Aplicativo
 class Tela_Inicial(Screen, BackgroundColorBehavior):
-    pass
+    def check_autentication(self):
+        try:
+            with open('App/log.txt', 'r') as d:
+                linhas = d.readlines()
+                if linhas == '':
+                    self.manager.current = 'tela_entrar'
+                else:
+                    self.manager.transition.direction = 'left'
+                    self.manager.current = 'tela_relatorios'
+        except IOError:
+            self.manager.current = 'tela_entrar'
 
 class Login(Screen, BackgroundColorBehavior):
-       
     def close_alert(self, obj):
         self.alert.dismiss()
     def show_alert(self):
         close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
         self.alert = MDDialog( title="Aviso", text="Email ou Senha inválidos", buttons=[close_btn])
         self.alert.open()
-
     def change_screen(self, *kwargs):
         self.manager.current = 'tela_relatorios'
 
@@ -144,45 +159,97 @@ class Login(Screen, BackgroundColorBehavior):
                     'User_genero', 
                     'User_img']
         
-        query = cursor.execute(
-            f"""
-            SELECT * FROM Usuario WHERE User_email='{email}' AND User_senha='{senha}'
-            """
-        )
+        banco_usuario = []
+        colunas_usuario = ['Id_user', 
+                           'User_nome', 
+                           'User_sobrenome',
+                           'User_email',
+                           'User_senha',
+                           'User_dt_nascimento', 
+                           'User_genero', 
+                           'User_img']
         
-        tab_usuario = cursor.execute(
-            f"""
-            SELECT * FROM Usuario WHERE User_email='{email}' AND User_senha='{senha}'
-            """
-        )
-        tab_tarefas = cursor.execute(
-            f"""
-            SELECT * FROM Tarefas WHERE Id_user=...
-            """
-        )
-        tab_lembretes = cursor.execute(
-            f"""
-            SELECT * FROM Lembretes WHERE Id_user=...
-            """
-        )
-        for resutl in query:
-            resutl = list(resutl)
-            banco.append(resutl)
-        user = pd.DataFrame(banco, columns=colunas)
+        banco_tarefas = []
+        colunas_tarefas = ['Id_tarefa',
+                           'Tarefa_titulo',
+                           'Tarefa_desc',
+                           'Tarefa_prazo',
+                           'Tarefa_status',
+                           'Id_user']
+        
+        banco_lembretes = []
+        colunas_lembretes = ['Id_lembrete',
+                             'Lembrete_titulo',
+                             'Lembrete_desc',
+                             'Id_user']
 
+        query = cursor1.execute(
+            f"""
+            SELECT * FROM Usuario WHERE User_email='{email}' AND User_senha='{senha}';
+            """
+        )
+        #Loop para checar se Senha e Email estão corretos
+        for result in query:
+            result = list(result)
+            banco.append(result)
+        user = pd.DataFrame(banco, columns=colunas)
+        
         if user.empty:
             self.show_alert()
+     
         else:
-            Clock.schedule_once(self.change_screen, 1)
+            ids = int(user['Id_user'][0])
+            tab_usuario = cursor2.execute(
+                f"""
+                SELECT * FROM Usuario WHERE User_email='{email}' AND User_senha='{senha}';
+                """
+            )
+            for usuario in tab_usuario:
+                usuario = list(usuario)
+                banco_usuario.append(usuario)
+
+            tab_tarefas = cursor3.execute(
+                f"""
+                SELECT * FROM Tarefas WHERE Id_user='{ids}';
+                """
+            )
+            for tarefa in tab_tarefas:
+                tarefa = list(tarefa)
+                banco_tarefas.append(tarefa)
+
+            tab_lembretes = cursor4.execute(
+                f"""
+                SELECT * FROM Lembretes WHERE Id_user='{ids}';
+                """
+            )
+            for lembrete in tab_lembretes:
+                lembrete = list(lembrete)
+                banco_lembretes.append(lembrete)
+            
+            #Logs para escrever no arquivo
+            log_usuario = pd.DataFrame(banco_usuario, columns=colunas_usuario)
+            log_tarefas = pd.DataFrame(banco_tarefas, columns=colunas_tarefas)
+            log_lembretes = pd.DataFrame(banco_lembretes, columns=colunas_lembretes)
+
+            #Escrevendo dados no arquivo 'log.txt'
             with open('App/log.txt', 'w') as f:
-                f.write(user.to_string(index=False))
+                f.write(unidecode.unidecode(log_usuario.to_string(index=False)))
+                f.write('\n')
+                f.write('\n')
+                f.write(unidecode.unidecode(log_tarefas.to_string(index=False)))
+                f.write('\n')
+                f.write('\n')
+                f.write(unidecode.unidecode(log_lembretes.to_string(index=False)))
+            
+            #Mudando para as tela do usuário
+            Clock.schedule_once(self.change_screen, 1)
            
 class Cadastrar(Screen, BackgroundColorBehavior):
     genero = 'Null'
     termos = False
 
     def terms(self):
-        webbrowser.open('https://www.youtube.com')
+        webbrowser.open('https://lucasbunny.github.io/InTime_Site/assets/docs/InTime%20App%20-%20Política%20de%20Privacidade%20e%20Termos%20de%20Uso.pdf')
 
     def close_alert(self, obj):
         self.alert.dismiss()
@@ -236,18 +303,52 @@ class Cadastrar(Screen, BackgroundColorBehavior):
              self.show_alert()
 
 class Tela_Relatorios(Screen, BackgroundColorBehavior):
-    inf_data = StringProperty('')
-    locale.setlocale(locale.LC_TIME, 'pt_BR')
-    info_data = datetime.today().strftime('%A, %d de %B de %Y')
+    pass
 
 class Tela_Configuracoes(Screen, BackgroundColorBehavior):
-    pass
+    def site(self):
+        webbrowser.open('https://lucasbunny.github.io/InTime_Site')
 
 class Tela_Configuracoes_Conta(Screen, BackgroundColorBehavior):
-    pass
+    def close_alert(self, obj):
+        self.alert.dismiss()
+    def show_alert(self, *kwargs):
+        close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
+        self.alert = MDDialog( title="Aviso", text="Preencha todos os campos e cheque se as informações estão corretas", buttons=[close_btn])
+        self.alert.open()
+    
+    def excluir_log(self, *kwargs):
+        os.remove('App/log.txt')
+        self.manager.current = 'tela_inicial'
+    
+    def salvar_alteracao(self):
+        novo_nome = self.ids.input_nome.text
+        novo_sobrenome = self.ids.input_sobrenome.text
+        senha_nova = self.ids.input_nova_senha.text
+        confirma_senha = self.ids.input_confirma_senha.text
+        
+        with open('App/log.txt', 'r') as b:
+            b.readline()
+            ids = b.readline()
+        id = list(ids)
+        id = id[7]
+
+        if novo_nome != '' and novo_sobrenome != '' and senha_nova == confirma_senha:
+            cursor5.execute(
+                f'''
+                UPDATE Usuario SET User_nome='{novo_nome}', User_sobrenome='{novo_sobrenome}', User_senha='{confirma_senha}'
+                WHERE Id_user='{id}'
+                ''')
+            cursor5.commit()
+            Clock.schedule_once(self.excluir_log, 1)
+        else:
+            Clock.schedule_once(self.show_alert, 1)
 
 class Tela_Configuracoes_About(Screen, BackgroundColorBehavior):
-    pass
+    def terms(self):
+        webbrowser.open('https://lucasbunny.github.io/InTime_Site/assets/docs/InTime%20App%20-%20Política%20de%20Privacidade%20e%20Termos%20de%20Uso.pdf')
+    def site(self):
+        webbrowser.open('https://lucasbunny.github.io/InTime_Site')
 
 class Tela_Tarefas(Screen, BackgroundColorBehavior):
     class Tarefa(MDCard):
@@ -362,7 +463,6 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
     def botao_nova(self):
         self.ids.tarf.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
 
-
 class Tela_Lembretes(Screen, BackgroundColorBehavior):
     class Lembrete(MDCard):
         titulo = StringProperty('')
@@ -461,7 +561,6 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
     def botao_nova(self):
         self.ids.lemb.add_widget(self.Lembrete(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
 
-
 class Tela_Temporizador(Screen, BackgroundColorBehavior):
     timer_string = StringProperty()
     running = BooleanProperty(False)
@@ -512,9 +611,31 @@ class Tela_Temporizador(Screen, BackgroundColorBehavior):
                 self._time = next(self.cycle)
         self.timer_string = str(self._time) 
     
-
 class InTime(MDApp):
     Window.size = (375, 812)
-    
+
+    #Informações da Tela de Relatórios 
+    info_horario = datetime.today().strftime('%X')
+    locale.setlocale(locale.LC_TIME, 'pt_BR')
+    info_data = datetime.today().strftime('%A, %d de %B de %Y')
+    comprimentos = StringProperty('')
+    info_nome = StringProperty('')
+    def informations(self):
+        try:
+            with open('App/log.txt', 'r') as f:
+                f.readline()
+                linha = f.readline()
+            nome = linha.split()
+            self.info_nome = nome[1]
+        except FileNotFoundError:
+            pass
+        self.comprimentos = self.info_periodo + ', ' + self.info_nome + '!'
+    def periodo(hora):
+        if '06:00:00' < hora < '11:59:00': return 'Bom Dia'
+        elif '12:00:00' < hora < '17:59:00': return 'Boa Tarde'
+        elif '18:00:00' < hora < '23:59:00': return 'Boa Noite'
+        return ''
+    info_periodo = periodo(info_horario) 
+
     def build_app(self):
         return Builder.load_file('App/telas.kv')

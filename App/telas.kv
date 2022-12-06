@@ -1,9 +1,15 @@
+<MDNavigationDrawerItem@MDNavigationDrawerItem>
+    text_color: "#000000"
+    icon_color: "#000000"
+    focus_behavior: False
+    _no_ripple_effect: True
+
 <Lembrete>
     id: lembrete
     padding: 4
     size_hint: None, None
     size: "300dp", "150dp"
-    ripple_behavior: True
+    _no_ripple_effect: True
     on_release: root.click_open()
 
     MDRelativeLayout:
@@ -31,6 +37,7 @@
     size_hint: None, None
     size: "300dp", "150dp"
     ripple_behavior: True
+    _no_ripple_effect: True
     on_release: root.user_click_open()
 
     MDRelativeLayout:
@@ -66,7 +73,6 @@
         Line:
             width: root.pomodoro_tamanho
             ellipse: (self.x, self.y, self.width, self.height, 0, self.pomodoro_valor*3.6)
-
 
 <Check@CheckBox>:
     group: 'group'
@@ -135,10 +141,10 @@ MDScreenManager:
         line_color: '#000000'
         pos_hint: {"center_x": .25, "center_y": .15}
         size_hint: 0.4, 0.06
-        on_release:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'tela_entrar'
-
+        on_release: 
+            root.check_autentication()
+            app.informations()
+    
     #Botão 'Cadastrar-se'
     MDRaisedButton:
         text: 'CADASTRAR-SE'
@@ -243,6 +249,7 @@ MDScreenManager:
         size_hint: .9, .07    
         on_release:
             root.autentication()
+            app.informations()
 
 <Cadastrar>:
     nome: campo_nome
@@ -441,14 +448,14 @@ MDScreenManager:
 <Tela_Relatorios>:
     #Labels 'Comprimentos'
     MDLabel:
-        text: 'Bom Dia, Nome!'
+        text: app.comprimentos
         font_name: 'Fonts\Comfortaa-VariableFont_wght.ttf'
         pos_hint: {'center_x': .55, 'center_y': .87}
         font_size: 36
     MDLabel:
-        text: root.info_data
+        text: app.info_data
         font_style: 'Button'
-        pos_hint: {'center_x': .56, 'center_y': .82}
+        pos_hint: {'center_x': .56, 'center_y': .80}
 
     ##Titulo
     MDLabel:
@@ -477,7 +484,7 @@ MDScreenManager:
                 source: "Images/dark souls.jpg"
                 radius: 36, 36, 36, 36
             MDNavigationDrawerLabel:
-                text: 'Nome/Sobrenome'
+                text: app.info_nome
                 padding: '12dp', '12dp', 0, '56dp'
 
             #Navegação entre telas
@@ -571,6 +578,7 @@ MDScreenManager:
     MDTextButton:
         text: 'Ajuda'
         pos_hint: {'center_x': .20, 'center_y': .53}
+        on_release: root.site()
     MDIcon:
         icon: 'help-circle-outline'
         pos_hint: {'center_x': .07, 'center_y': .53}
@@ -587,6 +595,11 @@ MDScreenManager:
         pos_hint: {'center_x': .07, 'center_y': .46}
 
 <Tela_Configuracoes_Conta>:
+    novo_nome: input_nome
+    novo_sobrenome: input_sobrenome
+    senha_nova: input_nova_senha
+    confirma_senha: input_confirma_senha
+
     #Botão 'Voltar'
     MDIconButton:
         icon: 'arrow-left-top'
@@ -607,7 +620,6 @@ MDScreenManager:
     #Foto de Perfil
     MDBoxLayout:
         md_bg_color: 1, 1, 1, .15
-
         radius: [100, ]
         size_hint: None, None
         size: "200dp", "200dp"
@@ -624,6 +636,7 @@ MDScreenManager:
 
     #Label 'Nome'
     MDTextField:
+        id: input_nome
         hint_text: "Nome:"
         mode: 'rectangle'
         icon_left: 'account-circle-outline'
@@ -646,6 +659,7 @@ MDScreenManager:
 
     #Label 'Sobrenome'
     MDTextField:
+        id: input_sobrenome
         hint_text: "Sobrenome:"
         mode: 'rectangle'
         line_color_normal: 0, 0, 0, 1
@@ -663,31 +677,9 @@ MDScreenManager:
         theme_icon_color: "Custom"
         color: 0, 0, 0, .3
 
-    #Label 'Senha'
-    MDTextField:
-        hint_text: "Senha:"
-        mode: 'rectangle'
-        password: True
-        icon_left: 'lock-outline'
-        icon_left_color_normal: 0, 0, 0, 1
-        icon_left_color_focus: 0, 0, 0, 1
-        line_color_normal: 0, 0, 0, 1
-        hint_text_color_normal: 0, 0, 0, .5
-        text_color_normal: 0, 0, 0, 1
-        line_color_focus: 0, 0, 0, 1
-        hint_text_color_focus: 0, 0, 0, .5
-        text_color_focus: 0, 0, 0, 1
-        pos_hint: {'center_x': .50, 'center_y': .39}
-        size_hint: .9, .08
-    MDIcon:
-        icon: 'pencil'
-        pos_hint: {'center_x': .857, 'center_y': .385}
-        icon_size: '30sp'
-        theme_icon_color: "Custom"
-        color: 0, 0, 0, .3
-
     #Label 'Nova Senha'
     MDTextField:
+        id: input_nova_senha
         hint_text: "Nova Senha:"
         mode: 'rectangle'
         password: True
@@ -711,6 +703,7 @@ MDScreenManager:
 
     #Label 'Confirmar Nova Senha'
     MDTextField:
+        id:input_confirma_senha
         hint_text: "Confirmar Senha:"
         mode: 'rectangle'
         password: True
@@ -740,6 +733,7 @@ MDScreenManager:
         md_bg_color: '#3892E0'
         pos_hint: {'center_x': .50, 'center_y': .13}
         size_hint: .9, .07
+        on_release: root.salvar_alteracao()
 
     #Botão 'SAIR DA CONTA'
     MDRaisedButton:
@@ -750,6 +744,7 @@ MDScreenManager:
         md_bg_color: '#FFFFFF'
         pos_hint: {'center_x': .50, 'center_y': .05}
         size_hint: .9, .07
+        on_release: root.excluir_log()
 
 <Tela_Configuracoes_About>:
     #Botão 'Voltar'
@@ -776,6 +771,7 @@ MDScreenManager:
         halign: 'left'
         pos_hint: {'center_x': .24, 'center_y': .75}
         font_size: '16'
+        on_release: root.site()
     MDIcon:
         icon: 'web'
         pos_hint: {'center_x': .07, 'center_y': .75}
@@ -806,6 +802,7 @@ MDScreenManager:
     MDTextButton:
         text: 'Termos de Uso'
         pos_hint: {'center_x': .27, 'center_y': .61}
+        on_release: root.terms()
     MDIcon:
         icon: 'shield-search'
         pos_hint: {'center_x': .07, 'center_y': .61}
@@ -814,6 +811,7 @@ MDScreenManager:
     MDTextButton:
         text: 'Privacidade'
         pos_hint: {'center_x': .24, 'center_y': .53}
+        on_release: root.terms()
     MDIcon:
         icon: 'shield-lock'
         pos_hint: {'center_x': .07, 'center_y': .53}
@@ -913,7 +911,7 @@ MDScreenManager:
                 source: "Images/dark souls.jpg"
                 radius: 36, 36, 36, 36
             MDNavigationDrawerLabel:
-                text: 'Nome/Sobrenome'
+                text: app.info_nome
                 padding: '12dp', '12dp', 0, '56dp'
 
             #Navegação entre telas
@@ -1051,7 +1049,7 @@ MDScreenManager:
                 source: "Images/dark souls.jpg"
                 radius: 36, 36, 36, 36
             MDNavigationDrawerLabel:
-                text: 'Nome/Sobrenome'
+                text: app.info_nome
                 padding: '12dp', '12dp', 0, '56dp'
 
             #Navegação entre telas
@@ -1118,7 +1116,7 @@ MDScreenManager:
     MDLabel:
         text: root.timer_string
         halign: 'center'
-        font_size: 30
+        font_size: 35
     #Botão Iniciar / Pausar 
     MDIconButton:
         id: botao_iniciar
@@ -1163,7 +1161,7 @@ MDScreenManager:
                 source: "Images/dark souls.jpg"
                 radius: 36, 36, 36, 36
             MDNavigationDrawerLabel:
-                text: 'Nome/Sobrenome'
+                text: app.info_nome
                 padding: '12dp', '12dp', 0, '56dp'
 
             #Navegação entre telas
@@ -1208,9 +1206,3 @@ MDScreenManager:
         on_release:
             root.manager.transition.direction = 'left'
             root.manager.current = 'tela_configuracoes'
-
-##################################################################################################################################
-
-##################################################################################################################################
-       
-####################################################################################################################################################
