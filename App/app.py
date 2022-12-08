@@ -225,6 +225,7 @@ class Login(Screen, BackgroundColorBehavior):
             for lembrete in tab_lembretes:
                 lembrete = list(lembrete)
                 banco_lembretes.append(lembrete)
+
             
             #Logs para escrever no arquivo
             log_usuario = pd.DataFrame(banco_usuario, columns=colunas_usuario)
