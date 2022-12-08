@@ -108,10 +108,10 @@ class PomodoroAnimacao(AnchorLayout):
 #Conexão com o Banco de Dados
 dados_conexao = (
     "Driver={SQL Server};"
-    "Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
-    #"Server=localhost;"
-    #"username=sa;"
-    #"password=123456;"
+    #"Server=DESKTOP-PQL2UTU\MSSQLSERVER01;"
+    "Server=localhost;"
+    "username=sa;"
+    "password=123456;"
     "Database=inTime;"
 )
 conexao = pyodbc.connect(dados_conexao)
@@ -324,6 +324,7 @@ class Tela_Configuracoes_Conta(Screen, BackgroundColorBehavior):
     def salvar_alteracao(self):
         novo_nome = self.ids.input_nome.text
         novo_sobrenome = self.ids.input_sobrenome.text
+        email_novo = self.ids.input_email.text
         senha_nova = self.ids.input_nova_senha.text
         confirma_senha = self.ids.input_confirma_senha.text
         
@@ -333,13 +334,20 @@ class Tela_Configuracoes_Conta(Screen, BackgroundColorBehavior):
         id = list(ids)
         id = id[7]
 
-        if novo_nome != '' and novo_sobrenome != '' and senha_nova == confirma_senha:
+        if novo_nome != '' and novo_sobrenome != '' and email_novo != '' and senha_nova != '' and confirma_senha != '' and senha_nova == confirma_senha:
             cursor5.execute(
                 f'''
-                UPDATE Usuario SET User_nome='{novo_nome}', User_sobrenome='{novo_sobrenome}', User_senha='{confirma_senha}'
+                UPDATE Usuario SET User_nome='{novo_nome}', User_sobrenome='{novo_sobrenome}', User_email='{email_novo}', User_senha='{confirma_senha}'
                 WHERE Id_user='{id}'
                 ''')
             cursor5.commit()
+            
+            novo_nome = self.ids.input_nome.text = ''
+            novo_sobrenome = self.ids.input_sobrenome.text = ''
+            email_novo = self.ids.input_email.text = ''
+            senha_nova = self.ids.input_nova_senha.text = ''
+            confirma_senha = self.ids.input_confirma_senha.text = ''
+            
             Clock.schedule_once(self.excluir_log, 1)
         else:
             Clock.schedule_once(self.show_alert, 1)
@@ -477,7 +485,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
             self.alert.open()
 
         def click_open(self):
-            # t = Tela_Lembretes()
+            t = Tela_Lembretes()
             if self.click == 1:
                 Animation(
                     size=(300, 300), 
@@ -485,7 +493,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                     t='in_quad',
                 ).start(self)
 
-                # self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:t.excluir()) 
+                self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:t.excluir()) 
                 self.btn2 = MDRaisedButton(text='Salvar', pos_hint={'center_x':.47, 'center_y':.07}, size_hint=(.3, 0.06), on_release=lambda x:self.salvar())  
                 self.btn3 = MDIconButton(icon='close', pos_hint={'center_x':.05, 'center_y':.96}, on_release=lambda x:self.click_close())
 
@@ -495,7 +503,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                 self.titulo = ''
                 self.text = ''
 
-                # self.ids.layout_lemb.add_widget(self.btn1)
+                self.ids.layout_lemb.add_widget(self.btn1)
                 self.ids.layout_lemb.add_widget(self.btn2)
                 self.ids.layout_lemb.add_widget(self.btn3)
 
@@ -516,7 +524,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                 self.ids.label_texto.pos=(3, -35)
 
 
-                # self.ids.layout_lemb.remove_widget(self.btn1)
+                self.ids.layout_lemb.remove_widget(self.btn1)
                 self.ids.layout_lemb.remove_widget(self.btn2)
                 self.ids.layout_lemb.remove_widget(self.btn3)
                 
@@ -543,7 +551,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                         self.ids.label_texto.pos=(3, -35)
 
 
-                        # self.ids.layout_tarf.remove_widget(self.btn1)
+                        self.ids.layout_lemb.remove_widget(self.btn1)
                         self.ids.layout_lemb.remove_widget(self.btn2)
                         self.ids.layout_lemb.remove_widget(self.btn3)
                         
@@ -555,8 +563,8 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                         
                         self.click = 1
 
-    # def excluir(self):
-    #     self.ids.tarf.remove_widget(self.Tarefa)
+    def excluir(self):
+        self.ids.lemb.remove_widget(self.Lembrete)
 
     def botao_nova(self):
         self.ids.lemb.add_widget(self.Lembrete(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
@@ -614,6 +622,9 @@ class Tela_Temporizador(Screen, BackgroundColorBehavior):
 class InTime(MDApp):
     Window.size = (375, 812)
 
+    def build_app(self):
+        return Builder.load_file('App/telas.kv')
+    
     #Informações da Tela de Relatórios 
     info_horario = datetime.today().strftime('%X')
     locale.setlocale(locale.LC_TIME, 'pt_BR')
@@ -636,6 +647,3 @@ class InTime(MDApp):
         elif '18:00:00' < hora < '23:59:00': return 'Boa Noite'
         return ''
     info_periodo = periodo(info_horario) 
-
-    def build_app(self):
-        return Builder.load_file('App/telas.kv')
