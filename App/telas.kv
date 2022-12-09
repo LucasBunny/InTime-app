@@ -69,7 +69,7 @@
 <PomodoroAnimacao>
     canvas:
         Color:
-            rgba: root.pomodoro_cor + [0.8]
+            rgba: root.pomodoro_cor + [1]
         Line:
             width: root.pomodoro_tamanho
             ellipse: (self.x, self.y, self.width, self.height, 0, self.pomodoro_valor*3.6)
@@ -170,6 +170,8 @@ MDScreenManager:
         on_release:
             root.manager.transition.direction = 'right'
             root.manager.current = 'tela_inicial'
+            root.email.text = ''
+            root.senha.text = ''
     #Titulo
     MDFloatLayout:
         MDLabel:
@@ -250,6 +252,8 @@ MDScreenManager:
         on_release:
             root.autentication()
             app.informations()
+            root.email.text = ''
+            root.senha.text = ''
 
 <Cadastrar>:
     nome: campo_nome
@@ -597,6 +601,7 @@ MDScreenManager:
 <Tela_Configuracoes_Conta>:
     novo_nome: input_nome
     novo_sobrenome: input_sobrenome
+    email_novo: input_email
     senha_nova: input_nova_senha
     confirma_senha: input_confirma_senha
 
@@ -609,6 +614,11 @@ MDScreenManager:
         on_release:
             root.manager.transition.direction = 'right'
             root.manager.current = 'tela_configuracoes'
+            root.novo_nome.text = ''
+            root.novo_sobrenome.text = ''
+            root.email_novo.text = ''
+            root.senha_nova.text = ''
+            root.confirma_senha.text = ''
 
     #Títullo
     MDLabel:
@@ -637,7 +647,7 @@ MDScreenManager:
     #Label 'Nome'
     MDTextField:
         id: input_nome
-        hint_text: "Nome:"
+        hint_text: "Novo Nome:"
         mode: 'rectangle'
         icon_left: 'account-circle-outline'
         icon_left_color_normal: 0, 0, 0, 1
@@ -660,7 +670,7 @@ MDScreenManager:
     #Label 'Sobrenome'
     MDTextField:
         id: input_sobrenome
-        hint_text: "Sobrenome:"
+        hint_text: "Novo Sobrenome:"
         mode: 'rectangle'
         line_color_normal: 0, 0, 0, 1
         hint_text_color_normal: 0, 0, 0, .5
@@ -673,6 +683,29 @@ MDScreenManager:
     MDIcon:
         icon: 'pencil'
         pos_hint: {'center_x': .857, 'center_y': .485}
+        icon_size: '30sp'
+        theme_icon_color: "Custom"
+        color: 0, 0, 0, .3
+
+    #Label 'Email'
+    MDTextField:
+        id: input_email
+        hint_text: "Novo Email:"
+        mode: 'rectangle'
+        icon_left: 'at'
+        icon_left_color_normal: 0, 0, 0, 1
+        icon_left_color_focus: 0, 0, 0, 1
+        line_color_normal: 0, 0, 0, 1
+        hint_text_color_normal: 0, 0, 0, .5
+        text_color_normal: 0, 0, 0, 1
+        line_color_focus: 0, 0, 0, 1
+        hint_text_color_focus: 0, 0, 0, .5
+        text_color_focus: 0, 0, 0, 1
+        pos_hint: {'center_x': .50, 'center_y': .390}
+        size_hint: .9, .08
+    MDIcon:
+        icon: 'pencil'
+        pos_hint: {'center_x': .857, 'center_y': .387}
         icon_size: '30sp'
         theme_icon_color: "Custom"
         color: 0, 0, 0, .3
