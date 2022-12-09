@@ -1,3 +1,6 @@
+import smtplib
+import email.message
+
 import os
 import pyodbc
 import locale
@@ -117,6 +120,7 @@ dados_conexao = (
 )
 conexao = pyodbc.connect(dados_conexao)
 cursor = conexao.cursor()
+cursor0 = conexao.cursor()
 cursor1 = conexao.cursor()
 cursor2 = conexao.cursor()
 cursor3 = conexao.cursor()
@@ -144,13 +148,57 @@ class Login(Screen, BackgroundColorBehavior):
         close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
         self.alert = MDDialog( title="Aviso", text="Email ou Senha inválidos", buttons=[close_btn])
         self.alert.open()
+    def show_alert_pass(self, *kwargs):
+        close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
+        self.alert = MDDialog( title="Aviso", text="A sua senha já foi enviada para a caixa de entrada do seu email. Dá uma checadinha lá ;).", buttons=[close_btn])
+        self.alert.open()
     def change_screen(self, *kwargs):
         self.manager.current = 'tela_relatorios'
 
+    def esqueceu_senha(self):
+        # Exibe mensagem
+        Clock.schedule_once(self.show_alert_pass, 1)
+        
+        # Checa qual o ID do usuário
+        with open('App/id.txt', 'r') as r:
+            r.readline()
+            id_user = r.readline()
+        id_user = id_user[7]
+        query = cursor0.execute(
+            f"""
+            SELECT User_nome, User_email, User_senha FROM Usuario WHERE Id_user='{id_user}';
+            """
+        )
+        for item in query:
+            item = list(item) 
+
+        # Configuração do Corpo do Email
+        corpo_email = f'''
+        <p>{item[0]}, nós conseguimos achar a sua senha.</p>
+        <p><b>Senha:</b> {item[2]}</p>
+        '''
+
+        # Configurações de envio da mensagem
+        msg = email.message.Message()
+        msg['Subject'] = 'Recuperação de Senha'
+        msg['From'] = 'meowthcompany@gmail.com'
+        msg['To'] = f'{item[1]}'
+        password = 'ntnpmbyodsymmxew' # Senha única, NÂO perder
+        msg.add_header('Content-Type', 'text/html')
+        msg.set_payload(corpo_email)
+
+        # Configurações de Segurança
+        s = smtplib.SMTP('smtp.gmail.com: 587')
+        s.starttls()
+        s.login(msg['From'], password=password)
+        s.sendmail(msg['From'], [msg['To']], msg.as_string().encode('utf-8'))
+        
     def autentication(self):
         email = self.ids.campo_email_user.text
         senha = self.ids.campo_senha_user.text
+        
         banco = []
+        coluna = ['Id_user']
         colunas = ['Id_user', 
                     'User_nome', 
                     'User_sobrenome',
@@ -189,11 +237,12 @@ class Login(Screen, BackgroundColorBehavior):
             SELECT * FROM Usuario WHERE User_email='{email}' AND User_senha='{senha}';
             """
         )
-        #Loop para checar se Senha e Email estão corretos
+        # Loop para checar se Senha e Email estão corretos
         for result in query:
             result = list(result)
             banco.append(result)
         user = pd.DataFrame(banco, columns=colunas)
+        log_id = pd.DataFrame(user, columns=coluna)
         
         if user.empty:
             self.show_alert()
@@ -228,12 +277,12 @@ class Login(Screen, BackgroundColorBehavior):
                 banco_lembretes.append(lembrete)
 
             
-            #Logs para escrever no arquivo
+            # Logs para escrever no arquivo
             log_usuario = pd.DataFrame(banco_usuario, columns=colunas_usuario)
             log_tarefas = pd.DataFrame(banco_tarefas, columns=colunas_tarefas)
             log_lembretes = pd.DataFrame(banco_lembretes, columns=colunas_lembretes)
 
-            #Escrevendo dados no arquivo 'log.txt'
+            # Escrevendo dados no arquivo 'log.txt'
             with open('App/log.txt', 'w') as f:
                 f.write(unidecode.unidecode(log_usuario.to_string(index=False)))
                 f.write('\n')
@@ -243,7 +292,10 @@ class Login(Screen, BackgroundColorBehavior):
                 f.write('\n')
                 f.write(unidecode.unidecode(log_lembretes.to_string(index=False)))
             
-            #Mudando para as tela do usuário
+            with open('App/id.txt', 'w') as d:
+                d.write(unidecode.unidecode(log_id.to_string(index=False)))
+            
+            # Mudando para as tela do usuário
             Clock.schedule_once(self.change_screen, 1)
            
 class Cadastrar(Screen, BackgroundColorBehavior):
@@ -317,8 +369,8 @@ class Tela_Configuracoes_Conta(Screen, BackgroundColorBehavior):
     def close_alert(self, obj):
         self.alert.dismiss()
     def show_alert(self, *kwargs):
-        close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
-        self.alert = MDDialog( title="Aviso", text="Preencha todos os campos e cheque se as informações estão corretas", buttons=[close_btn])
+        self.close_btn = MDFlatButton(text='Ok', on_release=self.close_alert)
+        self.alert = MDDialog( title="Aviso", text="Preencha todos os campos e cheque se as informações estão corretas", buttons=[self.close_btn])
         self.alert.open()
     
     def excluir_log(self, *kwargs):

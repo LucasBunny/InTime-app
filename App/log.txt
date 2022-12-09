@@ -1,5 +1,5 @@
- Id_user User_nome User_sobrenome      User_email User_senha User_dt_nascimento User_genero User_img
-       1     Lucas    Monte Santo lucas@email.com      12345         2004-10-03   Masculino     None
+ Id_user User_nome User_sobrenome          User_email User_senha User_dt_nascimento User_genero User_img
+       1     Lucas    Monte Santo lucas08ms@gmail.com      12345         2004-10-03   Masculino     None
 
 Empty DataFrame
 Columns: [Id_tarefa, Tarefa_titulo, Tarefa_desc, Tarefa_prazo, Tarefa_status, Id_user]
