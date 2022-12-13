@@ -1,16 +1,17 @@
-import smtplib
-import email.message
-
 import os
-import pyodbc
 import locale
+import pyodbc
+import smtplib
 import unidecode
 import webbrowser
 import pandas as pd
+import email.message
 from itertools import cycle
+from datetime import datetime
+from plyer import filechooser
+
 from kivy.clock import Clock
 from kivy.lang import Builder
-from datetime import datetime
 from kivymd.uix.card import MDCard
 from kivy.core.window import Window
 from kivy.animation import Animation
@@ -23,8 +24,8 @@ from kivymd.tools.hotreload.app import MDApp
 from kivymd.uix.anchorlayout import AnchorLayout
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.button import MDFlatButton, MDIconButton
-from kivy.properties import ListProperty, NumericProperty, StringProperty, BooleanProperty
 from kivymd.uix.behaviors.backgroundcolor_behavior import BackgroundColorBehavior
+from kivy.properties import ListProperty, NumericProperty, StringProperty, BooleanProperty
 
 
 #Funções do Pomodoro
@@ -126,6 +127,8 @@ cursor2 = conexao.cursor()
 cursor3 = conexao.cursor()
 cursor4 = conexao.cursor()
 cursor5 = conexao.cursor()
+cursor6 = conexao.cursor()
+
 
 #Telas do Aplicativo
 class Tela_Inicial(Screen, BackgroundColorBehavior):
@@ -373,6 +376,14 @@ class Tela_Configuracoes_Conta(Screen, BackgroundColorBehavior):
         self.alert = MDDialog( title="Aviso", text="Preencha todos os campos e cheque se as informações estão corretas", buttons=[self.close_btn])
         self.alert.open()
     
+    def escolher_imagem(self):
+        filechooser.open_file(on_selection=self.select)
+    def select(self, selection):
+        if selection:
+            self.ids.foto_perfil.source = selection[0]
+            self.foto = selection[0]
+
+            
     def excluir_log(self, *kwargs):
         os.remove('App/log.txt')
         self.manager.current = 'tela_inicial'
@@ -521,9 +532,9 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
                     
                     self.click = 1
    
-    def excluir(self):
-        self.ids.tarf.remove_widget(self.Tarefa)
-
+        def excluir(self):
+            pass
+        
     def botao_nova(self):
         self.ids.tarf.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
 
@@ -541,7 +552,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
             self.alert.open()
 
         def click_open(self):
-            t = Tela_Lembretes()
+            # t = Tela_Lembretes()
             if self.click == 1:
                 Animation(
                     size=(300, 300), 
@@ -549,7 +560,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                     t='in_quad',
                 ).start(self)
 
-                self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:t.excluir()) 
+                self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:self.excluir()) 
                 self.btn2 = MDRaisedButton(text='Salvar', pos_hint={'center_x':.47, 'center_y':.07}, size_hint=(.3, 0.06), on_release=lambda x:self.salvar())  
                 self.btn3 = MDIconButton(icon='close', pos_hint={'center_x':.05, 'center_y':.96}, on_release=lambda x:self.click_close())
 
@@ -568,7 +579,7 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
 
                 self.click = 2
 
-        def click_close(self):
+        def click_close(self, *kwargs):
             if self.click == 2:
                 Animation(
                     size=(300, 150), 
@@ -618,12 +629,13 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                         self.text = self.label_text.text
                         
                         self.click = 1
-
-    def excluir(self):
-        self.ids.lemb.remove_widget(self.Lembrete)
-
+    
+        def excluir(self):
+            pass
+            
     def botao_nova(self):
         self.ids.lemb.add_widget(self.Lembrete(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
+
 
 class Tela_Temporizador(Screen, BackgroundColorBehavior):
     timer_string = StringProperty()

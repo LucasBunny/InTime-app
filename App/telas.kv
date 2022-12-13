@@ -484,6 +484,7 @@ MDScreenManager:
         MDNavigationDrawerMenu:
             #Perfil do Usuário
             FitImage:
+                id: foto_perfil
                 size_hint: None, None
                 size: "70dp", "70dp"
                 source: "Images/dark souls.jpg"
@@ -636,14 +637,16 @@ MDScreenManager:
         size: "200dp", "200dp"
         pos_hint: {'center_x': .5, 'center_y': .741}
     FitImage:
+        id: foto_perfil
         size_hint: None, None
         pos_hint: {'center_x': .5, 'center_y': .741}
         size: "135dp", "135dp"
-        source: "Images/dark souls.jpg"
+        source: ""
         radius: [100, ]
     MDIconButton:
         icon: 'camera-outline'
         pos_hint: {'center_x': .6, 'center_y': .645}
+        on_release: root.escolher_imagem()
 
     #Label 'Nome'
     MDTextField:
@@ -940,6 +943,7 @@ MDScreenManager:
         MDNavigationDrawerMenu:
             #Perfil do Usuário
             FitImage:
+                id: foto_perfil
                 size_hint: None, None
                 size: "70dp", "70dp"
                 source: "Images/dark souls.jpg"
@@ -1078,6 +1082,7 @@ MDScreenManager:
         MDNavigationDrawerMenu:
             #Perfil do Usuário
             FitImage:
+                id: foto_perfil
                 size_hint: None, None
                 size: "70dp", "70dp"
                 source: "Images/dark souls.jpg"
@@ -1190,6 +1195,7 @@ MDScreenManager:
         MDNavigationDrawerMenu:
             #Perfil do Usuário
             FitImage:
+                id: foto_perfil
                 size_hint: None, None
                 size: "70dp", "70dp"
                 source: "Images/dark souls.jpg"
