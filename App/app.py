@@ -128,6 +128,8 @@ cursor3 = conexao.cursor()
 cursor4 = conexao.cursor()
 cursor5 = conexao.cursor()
 cursor6 = conexao.cursor()
+cursor7 = conexao.cursor()
+cursor8 = conexao.cursor()
 
 
 #Telas do Aplicativo
@@ -337,15 +339,10 @@ class Cadastrar(Screen, BackgroundColorBehavior):
         conf_senha = self.ids.campo_confirmar_senha.text
         
         if nome != '' and email != '' and senha != '' and conf_senha != '' and senha == conf_senha and self.termos:
-            query = cursor.execute(f"""SELECT COUNT(Id_user) from Usuario;""")
-            
-            for linhas in query:
-                linhas = int(''.join(map(str, linhas)))
-            
             cursor.execute(
                 f"""
                 INSERT INTO Usuario 
-                VALUES ({linhas+1}, '{nome}', '{sobrenome}', '{email}', '{senha}', '{data}', '{self.genero}', Null);
+                VALUES ('{nome}', '{sobrenome}', '{email}', '{senha}', '{data}', '{self.genero}', Null);
                 """
             )
             cursor.commit()
@@ -441,7 +438,6 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
             self.alert.open()
 
         def user_click_open(self):
-            t = Tela_Tarefas()
             if self.click == 1:
                 Animation(
                     size=(300, 300), 
@@ -449,7 +445,7 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
                     t='in_quad',
                 ).start(self)
 
-                self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:t.excluir()) 
+                self.btn1 = MDRaisedButton(text='Excluir', pos_hint={'center_x':.1, 'center_y':.07}, size_hint=(.2, 0.06), on_release=lambda x:self.excluir()) 
                 self.btn2 = MDRaisedButton(text='Salvar', pos_hint={'center_x':.47, 'center_y':.07}, size_hint=(.3, 0.06), on_release=lambda x:self.salvar()) 
                 self.btn3 = MDRaisedButton(text='Finalizar Tarefa', pos_hint={'center_x':.9, 'center_y':.07}, size_hint=(.2, 0.06)) 
                 self.btn4 = MDIconButton(icon='close', pos_hint={'center_x':.05, 'center_y':.96}, on_release=lambda x:self.user_click_close())
@@ -502,9 +498,24 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
                 self.click = 1
         
         def salvar(self):
+            try:
+                # Checa qual o ID do usuário
+                with open('App/id.txt', 'r') as r:
+                    r.readline()
+                    id_user = r.readline()
+                id_user = int(id_user[7])    
+            except FileNotFoundError:
+                pass
+                    
             if self.label_data.error or self.label_title.error or self.label_text.error:
                 self.show_alert()
             else:
+                cursor7.execute(
+                        f"""
+                        INSERT INTO Tarefas VALUES ('{self.label_title.text}', '{self.label_text.text}', '{self.label_data.text}', 'Pendente', {id_user});
+                        """
+                    )
+                cursor7.commit()
                 if self.click == 2:
                     Animation(
                         size=(300, 150), 
@@ -533,7 +544,39 @@ class Tela_Tarefas(Screen, BackgroundColorBehavior):
                     self.click = 1
    
         def excluir(self):
-            pass
+            cursor7.execute(
+                f'''
+                DELETE FROM Tarefas WHERE Tarefa_titulo='{self.label_title.text}';
+                '''
+            )
+            cursor7.commit()
+
+            if self.click == 2:
+                Animation(
+                    size=(300, 150), 
+                    duration=0.1,
+                    t='in_quad',
+                ).start(self)
+                
+                self.ids.label_titulo.pos=(3, 45)
+                self.ids.label_data.pos=(200, 45)
+                self.ids.label_texto.pos=(3, -35)
+
+
+                self.ids.layout_tarf.remove_widget(self.btn1)
+                self.ids.layout_tarf.remove_widget(self.btn2)
+                self.ids.layout_tarf.remove_widget(self.btn3)
+                self.ids.layout_tarf.remove_widget(self.btn4)
+                
+                self.ids.layout_tarf.remove_widget(self.label_title)
+                self.ids.layout_tarf.remove_widget(self.label_text)
+                self.ids.layout_tarf.remove_widget(self.label_data)
+
+                self.titulo = ''
+                self.text = ''
+                self.data = ''
+                
+                self.click = 1
         
     def botao_nova(self):
         self.ids.tarf.add_widget(self.Tarefa(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
@@ -552,7 +595,6 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
             self.alert.open()
 
         def click_open(self):
-            # t = Tela_Lembretes()
             if self.click == 1:
                 Animation(
                     size=(300, 300), 
@@ -604,34 +646,77 @@ class Tela_Lembretes(Screen, BackgroundColorBehavior):
                 self.click = 1
 
         def salvar(self):
-                if self.label_title.error or self.label_text.error:
-                    self.show_alert()
-                else:
-                    if self.click == 2:
-                        Animation(
-                            size=(300, 150), 
-                            duration=0.1,
-                            t='in_quad',
-                        ).start(self)
-                        
-                        self.ids.label_titulo.pos=(3, 45)
-                        self.ids.label_texto.pos=(3, -35)
+            try:
+                # Checa qual o ID do usuário
+                with open('App/id.txt', 'r') as r:
+                    r.readline()
+                    id_user = r.readline()
+                id_user = int(id_user[7])    
+            except FileNotFoundError:
+                pass
+            
+            if self.label_title.error or self.label_text.error:
+                self.show_alert()
+            else:
+                if self.click == 2:
+                    cursor8.execute(
+                        f"""
+                        INSERT INTO Lembretes VALUES ('{self.label_title.text}', '{self.label_text.text}', {id_user});
+                        """
+                    )
+                    cursor8.commit()
+
+                    Animation(
+                        size=(300, 150), 
+                        duration=0.1,
+                        t='in_quad',
+                    ).start(self)
+                    
+                    self.ids.label_titulo.pos=(3, 45)
+                    self.ids.label_texto.pos=(3, -35)
 
 
-                        self.ids.layout_lemb.remove_widget(self.btn1)
-                        self.ids.layout_lemb.remove_widget(self.btn2)
-                        self.ids.layout_lemb.remove_widget(self.btn3)
-                        
-                        self.ids.layout_lemb.remove_widget(self.label_title)
-                        self.ids.layout_lemb.remove_widget(self.label_text)
+                    self.ids.layout_lemb.remove_widget(self.btn1)
+                    self.ids.layout_lemb.remove_widget(self.btn2)
+                    self.ids.layout_lemb.remove_widget(self.btn3)
+                    
+                    self.ids.layout_lemb.remove_widget(self.label_title)
+                    self.ids.layout_lemb.remove_widget(self.label_text)
 
-                        self.titulo = self.label_title.text
-                        self.text = self.label_text.text
-                        
-                        self.click = 1
-    
+                    self.titulo = self.label_title.text
+                    self.text = self.label_text.text
+                    
+                    self.click = 1
+
         def excluir(self):
-            pass
+            cursor8.execute(
+                f'''
+                DELETE FROM Lembretes WHERE Lembrete_titulo='{self.label_title.text}';
+                '''
+            )
+            cursor8.commit()
+            if self.click == 2:
+                Animation(
+                    size=(300, 150), 
+                    duration=0.1,
+                    t='in_quad',
+                ).start(self)
+                
+                self.ids.label_titulo.pos=(3, 45)
+                self.ids.label_texto.pos=(3, -35)
+
+
+                self.ids.layout_lemb.remove_widget(self.btn1)
+                self.ids.layout_lemb.remove_widget(self.btn2)
+                self.ids.layout_lemb.remove_widget(self.btn3)
+                
+                self.ids.layout_lemb.remove_widget(self.label_title)
+                self.ids.layout_lemb.remove_widget(self.label_text)
+
+                self.titulo = ''
+                self.text = ''
+                
+                self.click = 1
             
     def botao_nova(self):
         self.ids.lemb.add_widget(self.Lembrete(line_color=(0.2, 0.2, 0.2, 0.8), md_bg_color='#FFFFFF',))
